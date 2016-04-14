@@ -1,0 +1,87 @@
+// g++ -g tests.cpp -o tests
+// valgrind --leak-check=full -v ./tests
+// g++ -g tests.cpp -o niwagato
+// ddd ./niwagato
+//breakpoint con doble click, después run y hacerle doble click al objeto que quiero ver
+
+#include <algorithm>
+#include "mini_test.h"
+#include "PlanificadorRR.h"
+
+using namespace std;
+
+string remove_spaces(const string& s) {
+  string out(s);
+  out.erase(remove(out.begin(), out.end(), ' '), out.end());
+  out.erase(remove(out.begin(), out.end(), '\n'), out.end());
+  return out;
+}
+
+template<typename T>
+string to_s(const T& m) {
+ 	ostringstream os;
+	os << m;
+	return os.str();
+}
+
+/**
+ * Crea un planificador sin porocesos.
+ */
+void planificadorVacio()
+{
+  PlanificadorRR<int> planificador;
+  ASSERT_EQ(planificador.hayProcesos(), false);
+  ASSERT_EQ(planificador.hayProcesosActivos(), false);
+  ASSERT_EQ(to_s(planificador), "[]");
+}
+
+void operadorIgualdad()
+{
+  PlanificadorRR<int> p1;
+  PlanificadorRR<int> p2;
+  p1.agregarProceso(1);
+  p1.agregarProceso(2);
+  p1.agregarProceso(3);
+  p2.agregarProceso(1);
+  p2.agregarProceso(2);
+  p2.agregarProceso(3);
+  ASSERT(p1 == p2);
+}
+
+// void constructorPorCopia()
+// {
+//   PlanificadorRR<int> p1;
+//   p1.agregarProceso(1);
+//   p1.agregarProceso(2);
+//   p1.agregarProceso(3);
+//   PlanificadorRR<int> p2(p1);
+//   ASSERT(p1 == p2);
+// }
+
+
+
+
+int main()
+{
+  RUN_TEST( planificadorVacio );
+  RUN_TEST( operadorIgualdad );
+  PlanificadorRR<int> p1;
+  p1.agregarProceso(1);
+  p1.agregarProceso(2);
+  p1.agregarProceso(3);
+  p1.pausarProceso(1);
+  p1.pausarProceso(2);
+  p1.pausarProceso(3);
+  p1.reanudarProceso(3);
+  p1.reanudarProceso(1);
+  p1.reanudarProceso(2); //meter todo en un test y partirlo en varios asserts
+  cerr << p1 << endl;
+  
+  //RUN_TEST( DestroyPlanif );
+  //RUN_TEST( agregaProces < int > );
+
+  // AGREGAR MAS TESTS...
+
+
+  return 0;
+}
