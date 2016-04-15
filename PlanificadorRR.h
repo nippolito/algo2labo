@@ -271,7 +271,7 @@ void PlanificadorRR<T>::eliminarProceso(const T& procAelim){
 template<typename T>
 const T& PlanificadorRR<T>::procesoEjecutado() const{
 	assert(hayProcesosActivos() == true);
-	return ejec;
+	return ejec->nombre;
 }
 
 template<typename T>
@@ -451,7 +451,7 @@ ostream& PlanificadorRR<T>::mostrarPlanificadorRR(ostream& os) const{
 	}else{
 		os << "]";
 	}
-
+	return os;
 }
 
 template<typename T>

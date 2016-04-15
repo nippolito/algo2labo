@@ -46,6 +46,12 @@ void operadorIgualdad()
   p2.agregarProceso(2);
   p2.agregarProceso(3);
   ASSERT(p1 == p2);
+  p1.eliminarProceso(2);
+  p2.eliminarProceso(2);
+  ASSERT(p1 == p2);
+  p1.eliminarProceso(1);
+  p2.eliminarProceso(1);
+  ASSERT(p1 == p2);
 }
 
 void constructorPorCopia()
@@ -72,6 +78,11 @@ void constructorPorCopia()
   p4.pausarProceso(72);
   PlanificadorRR<int> p7(p4);
   ASSERT(p4 == p7);
+  p4.eliminarProceso(72);
+  PlanificadorRR<int> p8(p4);
+  p1.eliminarProceso(3);
+  PlanificadorRR<int> p9(p1);
+  ASSERT(p1 == p9);
 
 }
 
@@ -85,9 +96,23 @@ void testNombre()
   p1.pausarProceso(2);
   p1.pausarProceso(3);
   p1.reanudarProceso(3);
+  ASSERT_EQ(to_s(p1), "[3*, 1 (i), 2 (i)]")
   p1.reanudarProceso(1);
   p1.reanudarProceso(2); //meter todo en un test y partirlo en varios asserts
+  ASSERT_EQ(to_s(p1), "[3*, 1, 2]")
+}
+
+void PlanifdePlanif()
+{
+  PlanificadorRR<int> p1;
+  p1.agregarProceso(1);
+  p1.agregarProceso(2);
+  p1.agregarProceso(3);
+  PlanificadorRR< PlanificadorRR<int> > pp1;
   cerr << p1 << endl;
+  pp1.agregarProceso(p1);
+  cerr << pp1 << endl;
+  // ASSERT_EQ(to_s(p1))
 }
 
 
@@ -98,6 +123,7 @@ int main()
   RUN_TEST( operadorIgualdad );
   RUN_TEST( constructorPorCopia );
   RUN_TEST( testNombre );
+  RUN_TEST( PlanifdePlanif );
 
   
   //RUN_TEST( DestroyPlanif );
