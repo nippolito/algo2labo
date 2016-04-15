@@ -197,16 +197,24 @@ PlanificadorRR<T>::PlanificadorRR(const PlanificadorRR<T>& proc){
 		lon = 0;
 		ejec = NULL;
 		Nodo* pcopiar = proc.ejec;
-		Nodo* nuevo = NULL;
-		while(pcopiar->sig != proc.ejec){
-				agregarProceso(pcopiar->nombre);
-				nuevo->sig = pcopiar;
-				nuevo->sig->activo = pcopiar->activo;
-				pcopiar = pcopiar->sig;
-		}
 		agregarProceso(pcopiar->nombre);
+		Nodo* nuevo = ejec;
+		pcopiar = pcopiar->sig;
+		while(pcopiar != proc.ejec){
+				agregarProceso(pcopiar->nombre);
+				pcopiar = pcopiar->sig;
+				nuevo = nuevo->sig;
+				if(pcopiar->ant->activo == false){
+					nuevo->activo = false;
+				}
+		}
+	nuevo = ejec;
+	if(pcopiar->activo == false){
+		nuevo->activo = false;
+	}	
 	}
 	lon = i;
+	estado = proc.estado;
 }
 
 template<typename T>
@@ -243,7 +251,7 @@ void PlanificadorRR<T>::eliminarProceso(const T& procAelim){
 	assert(esPlanificado(procAelim));
 	if(lon != 1){
 	Nodo* iterador = ejec;
-		while(iterador->nombre != procAelim){
+		while(!(iterador->nombre == procAelim)){
 			iterador = iterador->sig;
 		}
 		if(iterador->nombre == ejec->nombre){
@@ -272,7 +280,7 @@ void PlanificadorRR<T>::ejecutarSiguienteProceso(){
 	Nodo* iterador = ejec->sig;
 	int i = lon;
 	bool c = true;
-	while(i > 1 && c){  //chequear este while, por ahí i tiene que ser >= 1
+	while(i > 1 && c){  
 		if(iterador->activo == true){
 			c = false; 
 		}else{
@@ -287,7 +295,7 @@ template<typename T>
 void PlanificadorRR<T>::pausarProceso(const T& nom){
 	assert(esPlanificado(nom));
 	Nodo* ite = ejec;
-	while(ite->nombre != nom){ //cambiar por not
+	while(!(ite->nombre == nom)){ //cambiar por not
 		ite = ite->sig;
 	}
 	ite->activo = false;
@@ -302,12 +310,11 @@ template<typename T>
 void PlanificadorRR<T>::reanudarProceso(const T& nom){
 	assert(esPlanificado(nom));
 	Nodo* ite = ejec;
-	while(ite->nombre != nom){
+	while(!(ite->nombre == nom)){
 		ite = ite->sig;
 	}
 	ite->activo = true;
 	if(ejec->activo == false){
-		cerr << "entro" << endl;
 		ejec = ite;
 	}
 
@@ -457,7 +464,7 @@ bool PlanificadorRR<T>::operator==(const PlanificadorRR<T>& copia) const{
 		Nodo* izq = ejec;
 		Nodo* der = copia.ejec;
 		while(i > 0 && b){
-		if((izq->activo != der->activo) || (izq->nombre != der->nombre)){
+		if((izq->activo != der->activo) || !(izq->nombre == der->nombre)){
 			b = false;
 		}
 			i--;

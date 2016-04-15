@@ -48,24 +48,36 @@ void operadorIgualdad()
   ASSERT(p1 == p2);
 }
 
-// void constructorPorCopia()
-// {
-//   PlanificadorRR<int> p1;
-//   p1.agregarProceso(1);
-//   p1.agregarProceso(2);
-//   p1.agregarProceso(3);
-//   PlanificadorRR<int> p2(p1);
-//   ASSERT(p1 == p2);
-// }
-
-
-
-
-int main()
+void constructorPorCopia()
 {
-  RUN_TEST( planificadorVacio );
-  RUN_TEST( operadorIgualdad );
   PlanificadorRR<int> p1;
+  p1.agregarProceso(1);
+  p1.agregarProceso(2);
+  p1.agregarProceso(3);
+  p1.pausarProceso(2);
+  p1.pausarProceso(1);
+  p1.pausarProceso(3);
+  PlanificadorRR<int> p2(p1);
+  ASSERT(p1 == p2);
+  p1.reanudarProceso(2);
+  p1.ejecutarSiguienteProceso();
+  PlanificadorRR<int> p3(p1);
+  ASSERT(p1 == p3);
+  PlanificadorRR<int> p4;
+  PlanificadorRR<int> p5(p4);
+  ASSERT(p4 == p5);
+  p4.agregarProceso(72);
+  PlanificadorRR<int> p6(p4);
+  ASSERT(p4 == p6);
+  p4.pausarProceso(72);
+  PlanificadorRR<int> p7(p4);
+  ASSERT(p4 == p7);
+
+}
+
+void testNombre()
+{
+  PlanificadorRR<int> p1;  
   p1.agregarProceso(1);
   p1.agregarProceso(2);
   p1.agregarProceso(3);
@@ -76,6 +88,17 @@ int main()
   p1.reanudarProceso(1);
   p1.reanudarProceso(2); //meter todo en un test y partirlo en varios asserts
   cerr << p1 << endl;
+}
+
+
+
+int main()
+{
+  RUN_TEST( planificadorVacio );
+  RUN_TEST( operadorIgualdad );
+  RUN_TEST( constructorPorCopia );
+  RUN_TEST( testNombre );
+
   
   //RUN_TEST( DestroyPlanif );
   //RUN_TEST( agregaProces < int > );
